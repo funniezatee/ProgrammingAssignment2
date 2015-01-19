@@ -1,35 +1,37 @@
-x<-12:233232234
-> vec <- makeVector(x)
-> cachemean(vec)
-##
-newM <- matrix(runif(500*500), ncol=500) 
-i <- makeCacheMatrix(newM)
-cacheSolve(i)
 
-## Put comments here that give an overall description of what your
-## functions do
-## Write a short comment describing this function
+## This function is pretty similar to what was provided.
+## Main thing is changing the input type, to a matrix.
+## And renaming function names as appropriate.
 makeCacheMatrix <- function(x = matrix()) {
-      m <- NULL
+      m <- NULL		# reset m cache
       set <- function(y) {
           x <<- y
           m <<- NULL
       }
       get <- function() x
-      setinverse <- function(inverse) m <<- inverse
+      setinverse <- function(inverse) m <<- inverse	# double arrow here, to set m in the parent environment
       getinverse <- function() m
-      list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
+      list(set=set, get=get, setinverse=setinverse, getinverse=getinverse) # return the methods as a list
 }
-## Write a short comment describing this function
+
+## This method returns the inverse of a square matrix.
+## It checks if a cache value is in memory first,
+## if not, it proceeds to compute the value.
 cacheSolve <- function(x, ...) {
-  ## Return a matrix that is the inverse of 'x'
+  
       m <- x$getinverse()
-      if(!is.null(m)) {
+      if(!is.null(m)) {		# If obtained before, retrieve from memory
           message("getting cached data.")
           return(m)
       }
-      data <- x$get()
-      m <- solve(data, ...)
-      x$setinverse(m)
+      data <- x$get()		# Retrieve original matrix
+      m <- solve(data, ...) # Return a matrix that is the inverse of 'x'
+      x$setinverse(m)		# Set in object for further use
       m
 }
+
+
+## Tester methods
+newM <- matrix(runif(50*50), ncol=50) 
+i <- makeCacheMatrix(newM)
+cacheSolve(i)
